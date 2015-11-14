@@ -1,18 +1,19 @@
-class HTML
+class HTML < BasicObject
   def initialize(&block)
     @rendered_html=""
     instance_eval(&block)
   end
 
   def method_missing(tag, *args, &block)
-    if args.first.is_a? Hash
+    properties = ""
+    if args.first.is_a? (::Object::Hash)
       properties = args.shift.map do |p|
         p.join("=")
       end
       properties * " "
     end
     @rendered_html << "<#{tag} #{properties}>"
-    if block_given?
+    if block
       instance_eval(&block)
     else
       @rendered_html << "#{args.first}"
@@ -30,6 +31,7 @@ html = HTML.new do
   ul id: "nav",class: "list" do
     li "list1"
     li "list2"
+    p "paragraph"
   end
 end
 

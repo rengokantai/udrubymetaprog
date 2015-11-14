@@ -1,6 +1,6 @@
 class Construct
-  def self.new(*properties)
-    Class.new do
+  def self.new(*properties, &block)
+    klass = Class.new do
       @properties = properties
       attr_accessor *properties
       def initialize(*values)
@@ -20,11 +20,18 @@ class Construct
         @properties
       end
     end
+    klass.class_eval(&block)
+    klass
   end
 end
 
-Product = Construct.new(:id,"name")
+Product = Construct.new(:id,"name") do
+  def to_s
+    "name is#{name}"
+  end
+end
 obj = Product.new(1,"book")
 puts obj.name
 puts obj[:name]
 p Product.instance_methods(false)
+puts obj.to_s
